@@ -22,7 +22,7 @@ function App() {
 
   const handleCardScan = (data) => {
     alert("awdawdawd", data);
-    setData(card);
+    setData(data);
   };
 
   return (
