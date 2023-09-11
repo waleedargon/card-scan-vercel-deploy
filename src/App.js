@@ -17,7 +17,7 @@ function App() {
 
   const onError = (err) => {
     alert("error: ", err);
-    setData(card);
+    setData(err);
   };
 
   const handleCardScan = (data) => {
