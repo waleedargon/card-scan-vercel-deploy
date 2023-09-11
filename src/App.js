@@ -32,6 +32,7 @@ function App() {
       onSuccess={onSuccess}
       onError={onError}
     />
+    {data}
   );
 }
 
