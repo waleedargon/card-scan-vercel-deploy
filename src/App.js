@@ -11,7 +11,7 @@ function App() {
   const [data, setData] = useState('');
 
   const onSuccess = (card) => {
-    alert(card.cardNumber);
+    console.log(card);
     // setData(card);
   };
 
