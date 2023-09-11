@@ -11,18 +11,18 @@ function App() {
   const [data, setData] = useState('');
 
   const onSuccess = (card) => {
-    alert(card);
-    setData(card);
+    alert(card.cardNumber);
+    // setData(card);
   };
 
   const onError = (err) => {
     alert("error: ", err);
-    setData(err);
+    // setData(err);
   };
 
   const handleCardScan = (data) => {
     alert("awdawdawd", data);
-    setData(data);
+    // setData(data);
   };
 
   return (
@@ -33,7 +33,7 @@ function App() {
       onSuccess={onSuccess}
       onError={onError}
     />
-    {data}
+    {/* {data} */}
     </>
     
   );
