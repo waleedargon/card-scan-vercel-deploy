@@ -26,6 +26,7 @@ function App() {
   };
 
   return (
+    <>
     <CardScanView
       live={false}
       sessionToken={token}
@@ -33,6 +34,8 @@ function App() {
       onError={onError}
     />
     {data}
+    </>
+    
   );
 }
 
