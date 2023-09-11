@@ -7,7 +7,7 @@ const token = "secret_test_9gfPEdNWmzPNhIr0";
 
 function App() {
   const onSuccess = (card) => {
-    console.log("new card: ", card);
+    alert(card);
   };
 
   const onError = (err) => {
