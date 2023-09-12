@@ -19,8 +19,10 @@ function App() {
   };
 
   React.useEffect(() => {
-    const licenseKey =
-      "sRwAAAYJbG9jYWxob3N0r/lOPgo/w35CpOFWKFI7ZWysHXVwbOx9IuL6njL1wlgTKZLcxku+/BYGLT51y1BW60q69+lhdHbYGYdULkNP+9VXjWhAIjnbYIFzzncZ4Q9TBDfZiqELHE2xy+etFVMCpJnhPXEsXxlzcRhBo4K+XULYMYPK7Z9NJDGUsBBY4zRbtVWA9o4wQ5o=";
+    // const licenseKey =
+      // "sRwAAAYJbG9jYWxob3N0r/lOPgo/w35CpOFWKFI7ZWysHXVwbOx9IuL6njL1wlgTKZLcxku+/BYGLT51y1BW60q69+lhdHbYGYdULkNP+9VXjWhAIjnbYIFzzncZ4Q9TBDfZiqELHE2xy+etFVMCpJnhPXEsXxlzcRhBo4K+XULYMYPK7Z9NJDGUsBBY4zRbtVWA9o4wQ5o=";
+
+      const licenseKey = "sRwAAAYiY2FyZC1zY2FuLXZlcmNlbC1kZXBsb3kudmVyY2VsLmFwcAHp+mMmWs3YlAzquODHyQaMUPRtdrU1hYoTtxs8PkDQ6iiy8SKGtHM3+goNSYELhwDXg7SU0U/VrRwurnMey2WPrGbOqwgMsI/iA7Yh1hNVT/eoEMvcV18CE8uG0ea4D1sJ8eaDiWtC1nRjt5LDxjgLoOOEwv+bJgwnVE81TT82WHgyNsBcQJ1m";
     if (BlinkCardSDK.isBrowserSupported()) {
       const loadSettings = new BlinkCardSDK.WasmSDKLoadSettings(licenseKey);
 
