@@ -2,7 +2,6 @@ import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
 import * as BlinkCardSDK from "@microblink/blinkcard-in-browser-sdk";
-// import * as BlinkCardSDK from "./es/blinkcard-sdk.js";
 
 // import { loadStripe } from "@stripe/stripe-js";
 // import { Elements } from "@stripe/react-stripe-js";
@@ -15,236 +14,99 @@ function App() {
   const blinkCardRef = React.useRef(null);
   const videoRef = React.useRef(null);
 
-  const initialMessageEl = document.getElementById("msg");
-  const progressEl = document.getElementById("load-progress");
-
-  // UI elements for scanning feedback
-  const scanImageElement = document.getElementById("target-image");
-  const inputImageFileFrontSide = document.getElementById(
-    "image-file-front-side"
-  );
-
-  const inputImageFileBackSide = document.getElementById(
-    "image-file-back-side"
-  );
+  const callbacks = {
+    onFirstSideResult: () => alert("Flip the card"),
+  };
 
   React.useEffect(() => {
     const licenseKey =
       "sRwAAAYJbG9jYWxob3N0r/lOPgo/w35CpOFWKFI7ZWysHXVwbOx9IuL6njL1wlgTKZLcxku+/BYGLT51y1BW60q69+lhdHbYGYdULkNP+9VXjWhAIjnbYIFzzncZ4Q9TBDfZiqELHE2xy+etFVMCpJnhPXEsXxlzcRhBo4K+XULYMYPK7Z9NJDGUsBBY4zRbtVWA9o4wQ5o=";
+    if (BlinkCardSDK.isBrowserSupported()) {
+      const loadSettings = new BlinkCardSDK.WasmSDKLoadSettings(licenseKey);
 
-    if (!BlinkCardSDK.isBrowserSupported()) {
-      console.log("This browser is not supported!");
-      return;
-    }
-
-    // 1. It's possible to obtain a free trial license key on microblink.com
-    // let licenseKey =
-    // "sRwAAAYJbG9jYWxob3N0r/lOPmg/w35CpOHWLcIXyZqx58jBjDQEgc9g8PbxdaaDM+jedRKGXjqKQKz7ocX5/uQ6wvwfkHd4iovo1UDxWg4K+dstSEarVzTkBgKXX7iqpHoOjlU1pXPWbWBGasvjaoC2sKOnT7RozIdO8ljPeJVQO0owX3JzguXvoYK3p2ZtlcV/ndSC43hDJjKy4ACGg4Cul5jogfwPEdtJ7bk0XmtamIvtCVSnqQMfF1EwxCXOHw==";
-
-    // 2. Create instance of SDK load settings with your license key
-    const loadSettings = new BlinkCardSDK.WasmSDKLoadSettings(licenseKey);
-
-    console.log("awdawdwa", loadSettings);
-
-    // [OPTIONAL] Change default settings
-
-    // Show or hide hello message in browser console when WASM is successfully loaded
-    loadSettings.allowHelloMessage = true;
-
-    // In order to provide better UX, display progress bar while loading the SDK
-    loadSettings.loadProgressCallback = (progress) =>
-      (progressEl.value = progress);
-
-    // Set absolute location of the engine, i.e. WASM and support JS files
-    loadSettings.engineLocation = "https://cdn.jsdelivr.net/npm/@microblink/blinkcard-in-browser-sdk@2.7.0/resources"
-
-    // Set absolute location of the worker file
-    loadSettings.workerLocation =
-      "https://cdn.jsdelivr.net/npm/@microblink/blinkcard-in-browser-sdk@2.7.0/resources/BlinkCardWasmSDK.worker.min.js";
-
-    // 3. Load SDK
-    BlinkCardSDK.loadWasmModule(loadSettings).then(
-      (sdk) => {
-
-        console.log('sdk', sdk)
-        document.getElementById("screen-initial")?.classList.add("hidden");
-        document.getElementById("screen-start")?.classList.remove("hidden");
-        document
-          .getElementById("start-button")
-          ?.addEventListener("click", (ev) => {
-            ev.preventDefault();
-            startScan(sdk);
-          });
-      },
-      (error) => {
-        console.error("Failed to load SDK!", error);
-      }
-    );
-  }, []);
-
-  const startScan = async (sdk) => {
-    document.getElementById("screen-start")?.classList.add("hidden");
-    document.getElementById("screen-scanning")?.classList.remove("hidden");
-
-    // 1. Create a recognizer objects which will be used to recognize single image or stream of images.
-    //
-    // In this example, we create a BlinkCardRecognizer, which knows how to scan Payment cards
-    // and extract payment information from them.
-    const blinkCardRecognizer = await BlinkCardSDK.createBlinkCardRecognizer(
-      sdk
-    );
-
-    // 2. Create a RecognizerRunner object which orchestrates the recognition with one or more
-    //    recognizer objects.
-    const recognizerRunner = await BlinkCardSDK.createRecognizerRunner(
-      // SDK instance to use
-      sdk,
-      // List of recognizer objects that will be associated with created RecognizerRunner object
-      [blinkCardRecognizer],
-      // [OPTIONAL] Should recognition pipeline stop as soon as first recognizer in chain finished recognition
-      false
-    );
-
-    // 3. Prepare front side image for scan action - keep in mind that SDK can only process images represented
-    //    in internal CapturedFrame data structure. Therefore, auxiliary method "captureFrame" is provided.
-
-    // Make sure that image file is provided
-    const fileFrontSide = getImageFromInput(inputImageFileFrontSide.files);
-
-    if (!fileFrontSide) {
-      alert("No image files provided!");
-      // Release memory on WebAssembly heap used by the RecognizerRunner
-      recognizerRunner?.delete();
-
-      // Release memory on WebAssembly heap used by the recognizer
-      blinkCardRecognizer?.delete();
-      inputImageFileFrontSide.value = "";
-      return;
-    }
-
-    const imageFrame = await getImageFrame(fileFrontSide);
-
-    // 4. Start the recognition and await for the results
-    const processResultFrontSide = await recognizerRunner.processImage(
-      imageFrame
-    );
-
-    // 5. If recognition of the first side was successful, process the back side
-    if (processResultFrontSide !== BlinkCardSDK.RecognizerResultState.Empty) {
-      // 6. Prepare back side image for scan action
-      const fileBackSide = getImageFromInput(inputImageFileBackSide.files);
-
-      if (!fileBackSide) {
-        alert("No image files provided!");
-        // Release memory on WebAssembly heap used by the RecognizerRunner
-        recognizerRunner?.delete();
-
-        // Release memory on WebAssembly heap used by the recognizer
-        blinkCardRecognizer?.delete();
-        inputImageFileBackSide.value = "";
-        return;
-      }
-
-      const imageFrame = await getImageFrame(fileBackSide);
-
-      // 7. Start the recognition and await for the results
-      const processResultBackSide = await recognizerRunner.processImage(
-        imageFrame
-      );
-
-      if (processResultBackSide !== BlinkCardSDK.RecognizerResultState.Empty) {
-        // 8. If recognition of the back side was successful, obtain the result and display it
-        const results = await blinkCardRecognizer.getResult();
-
-        if (results.state !== BlinkCardSDK.RecognizerResultState.Empty) {
-          console.log("BlinkCard results", results);
-
-          const firstAndLastName = results.owner;
-          const cardNumber = results.cardNumber;
-          const dateOfExpiry = {
-            year: results.expiryDate.year,
-            month: results.expiryDate.month,
-          };
-
-          alert(
-            `Hello, ${firstAndLastName}!\n Your payment card with card number ${cardNumber} will expire on ${dateOfExpiry.year}/${dateOfExpiry.month}.`
+      BlinkCardSDK.loadWasmModule(loadSettings).then(
+        async (wasmSDK) => {
+          const recognizer = await BlinkCardSDK.createBlinkCardRecognizer(
+            wasmSDK
           );
+          const recognizerRunner = await BlinkCardSDK.createRecognizerRunner(
+            wasmSDK,
+            [recognizer],
+            true,
+            callbacks
+          );
+
+          // const cameraFeed = document.getElementsByClassName( "myCameraVideoElement" );
+          try {
+            const videoRecognizer = await BlinkCardSDK.VideoRecognizer.createVideoRecognizerFromCameraStream(
+              videoRef.current,
+              recognizerRunner
+            );
+
+            console.log("wadawdaw", videoRecognizer);
+
+            // There is more than one way to handle recognition
+
+            // Using the recognize() method will provide you with the default behavior,
+            // such as built-in error handling, timeout and video feed pausing.
+            // const processResult = await videoRecognizer.recognize();
+
+            // Using the startRecognition() method allows you to pass your own onScanningDone callback,
+            // giving you the option to create custom behavior.
+            // const processResult = await videoRecognizer.recognize();
+
+            // Using the startRecognition() method allows you to pass your own onScanningDone callback,
+            // giving you the option to create custom behavior.
+            const processResult = await videoRecognizer.startRecognition(
+              async (recognitionState) => {
+                videoRecognizer.pauseRecognition();
+                return recognitionState;
+              }
+            );
+
+            if (processResult !== BlinkCardSDK.RecognizerResultState.Empty) {
+              const recognitionResult = await recognizer.getResult();
+              console.log(recognitionResult);
+              videoRecognizer.releaseVideoFeed();
+              recognizerRunner.delete();
+              recognizer.delete();
+            } else {
+              console.log("Recognition was not successful!");
+            }
+
+            // To obtain recognition results see next step
+          } catch (error) {
+            console.log(error);
+            if (error.name === "VideoRecognizerError") {
+              // Reason is of type BlinkCardSDK.NotSupportedReason and contains information why video
+              // recognizer could not be used. Usually this happens when user didn't grant access to a
+              // camera or when a hardware or OS error occurs.
+              const reason = error.reason;
+            }
+          }
+        },
+        (error) => {
+          // Error happened during the initialization of the SDK
+          console.log("Error during the initialization of the SDK!", error);
         }
-      } else {
-        alert(
-          "Could not extract information from the back side of a document!"
-        );
-      }
+      );
     } else {
-      alert("Could not extract information from the front side of a document!");
+      console.log("This browser is not supported by the SDK!");
     }
-
-    // 7. Release all resources allocated on the WebAssembly heap and associated with camera stream
-
-    // Release memory on WebAssembly heap used by the RecognizerRunner
-    recognizerRunner?.delete();
-
-    // Release memory on WebAssembly heap used by the recognizer
-    blinkCardRecognizer?.delete();
-
-    // Hide scanning screen and show scan button again
-    inputImageFileFrontSide.value = "";
-    inputImageFileBackSide.value = "";
-    document.getElementById("screen-start")?.classList.remove("hidden");
-    document.getElementById("screen-scanning")?.classList.add("hidden");
-  };
-
-  const getImageFromInput = (fileList) => {
-    let image = null;
-    const imageRegex = RegExp(/^image\//);
-    for (let i = 0; i < fileList.length; ++i) {
-      if (imageRegex.exec(fileList[i].type)) {
-        image = fileList[i];
-      }
-    }
-    return image;
-  };
-
-  async function getImageFrame(file) {
-    scanImageElement.src = URL.createObjectURL(file);
-    await scanImageElement.decode();
-    return BlinkCardSDK.captureFrame(scanImageElement);
-  }
+  }, []);
 
   return (
     <>
-      <div id="screen-initial">
-        <h1 id="msg">Loading...</h1>
-        <progress id="load-progress" value="0" max="100"></progress>
-      </div>
+      <div className="App">
+        {/* <div ref={videoRef} className="myCameraVideoElement">
 
-      <div id="screen-start" className="hidden">
-        <fieldset>
-          <label htmlFor="image-file-front-side">Front side image</label>
-          <input
-            id="image-file-front-side"
-            type="file"
-            accept="image/*"
-            capture="environment"
-          />
-        </fieldset>
-        <fieldset>
-          <label htmlFor="image-file-back-side">Back side image</label>
-          <input
-            id="image-file-back-side"
-            type="file"
-            accept="image/*"
-            capture="environment"
-          />
-        </fieldset>
-        <button id="start-button" type="button">
-          Start
-        </button>
-      </div>
+        </div> */}
+        {/* <h1>Stripe Payment with Apple Pay</h1> */}
+        {/* <Elements stripe={stripePromise}>
+          <PaymentComponent />
+        </Elements> */}
 
-      <div id="screen-scanning" className="hidden">
-        <h1>Processing...</h1>
-        <img id="target-image" />
+        <video ref={videoRef}></video>
       </div>
     </>
   );
