@@ -17,7 +17,7 @@ function PaymentComponent() {
     const pr = stripe.paymentRequest({
         currency: 'usd',
         country: 'US',
-        requestPayerEmail: true,
+        requestPayerEmail: false,
         total: {
             label: 'demo payment',
             amount: 1990
