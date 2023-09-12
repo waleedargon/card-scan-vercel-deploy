@@ -24,7 +24,12 @@ function PaymentComponent() {
         }
     })
 
+    console.log('DWADWA', );
+
     pr.canMakePayment().then(result => {
+        console.log('RESULT : ');
+        console.log(result);
+        
         if (result) {
             setPaymentRequest(pr);
         }
