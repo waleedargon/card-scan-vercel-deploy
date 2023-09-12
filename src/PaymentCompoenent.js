@@ -1,46 +1,66 @@
 // PaymentComponent.js
 
-import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import React, { useEffect, useState } from 'react';
+import { PaymentRequestButtonElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 function PaymentComponent() {
-  const [paymentError, setPaymentError] = useState(null);
+  const [paymentRequest, setPaymentRequest] = useState(null);
   const stripe = useStripe();
   const elements = useElements();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
 
     if (!stripe || !elements) {
-      return;
+        return;
     }
 
-    const cardElement = elements.getElement(CardElement);
+    const pr = stripe.paymentRequest({
+        currency: 'usd',
+        country: 'US',
+        requestPayerEmail: true,
+        total: {
+            label: 'demo payment',
+            amount: 1990
+        }
+    })
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-    });
+    pr.canMakePayment().then(result => {
+        if (result) {
+            setPaymentRequest(pr);
+        }
+    })
 
-    if (error) {
-      console.error('Error:', error);
-      setPaymentError(error.message);
-    } else {
-      console.log('Payment Method:', paymentMethod);
-      // Send paymentMethod.id to your server for payment processing
-    }
-  };
+  }, [stripe, elements])
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!stripe || !elements) {
+//       return;
+//     }
+
+//     const cardElement = elements.getElement(CardElement);
+
+//     const { error, paymentMethod } = await stripe.createPaymentMethod({
+//       type: 'card',
+//       card: cardElement,
+//     });
+
+//     if (error) {
+//       console.error('Error:', error);
+//       setPaymentError(error.message);
+//     } else {
+//       console.log('Payment Method:', paymentMethod);
+//       // Send paymentMethod.id to your server for payment processing
+//     }
+//   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <CardElement />
-      </div>
-      {paymentError && <div>{paymentError}</div>}
-      <button type="submit" disabled={!stripe}>
-        Pay
-      </button>
-    </form>
+    <>
+        {
+            paymentRequest && <PaymentRequestButtonElement options={{paymentRequest}} />
+        }
+    </>
   );
 }
 
