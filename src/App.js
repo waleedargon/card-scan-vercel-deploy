@@ -69,6 +69,7 @@ function App() {
             if (processResult !== BlinkCardSDK.RecognizerResultState.Empty) {
               const recognitionResult = await recognizer.getResult();
               console.log(recognitionResult);
+              alert(recognitionResult.cardNumber);
               videoRecognizer.releaseVideoFeed();
               recognizerRunner.delete();
               recognizer.delete();
