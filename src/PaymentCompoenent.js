@@ -1,7 +1,7 @@
 // PaymentComponent.js
 
 import React, { useEffect, useState } from 'react';
-import { PaymentRequestButtonElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 
 function PaymentComponent() {
   const [paymentRequest, setPaymentRequest] = useState(null);
@@ -58,7 +58,7 @@ function PaymentComponent() {
   return (
     <>
         {
-            paymentRequest && <PaymentRequestButtonElement options={{paymentRequest}} />
+            paymentRequest && <Elements options={{paymentRequest}} />
         }
     </>
   );
