@@ -1,41 +1,22 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { React, useState } from "react";
-import { CardScanView } from "@cardscan.ai/insurance-cardscan-react";
 
-// See Authentication on where to get this token.
-const token = "secret_test_9gfPEdNWmzPNhIr0";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import PaymentComponent from './PaymentCompoenent';
+
+const stripePromise = loadStripe("YOUR_STRIPE_PUBLISHABLE_KEY");
 
 function App() {
-
-  const [data, setData] = useState('');
-
-  const onSuccess = (card) => {
-    console.log(card);
-    // setData(card);
-  };
-
-  const onError = (err) => {
-    alert("error: ", err);
-    // setData(err);
-  };
-
-  const handleCardScan = (data) => {
-    alert("awdawdawd", data);
-    // setData(data);
-  };
-
   return (
     <>
-    <CardScanView
-      live={false}
-      sessionToken={token}
-      onSuccess={onSuccess}
-      onError={onError}
-    />
-    {/* {data} */}
+      <div className="App">
+        <h1>Stripe Payment with Apple Pay</h1>
+        <Elements stripe={stripePromise}>
+          <PaymentComponent />
+        </Elements>
+      </div>
     </>
-    
   );
 }
 
