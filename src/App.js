@@ -199,9 +199,9 @@ const App = () => {
   'extractedCardName': extractedCardName});
     };
 
-    // const interval = setInterval(captureFrameAndRecognize, 5000); // Capture and recognize every 2 seconds
+    const interval = setInterval(captureFrameAndRecognize, 10000); // Capture and recognize every 2 seconds
 
-    // return () => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   return (
