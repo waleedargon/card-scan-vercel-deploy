@@ -194,14 +194,14 @@ const App = () => {
           extractedExpiryDate = expiryDateMatch[0];
         }
       });
-      alert('number', extractedCardNumber)
-      alert('expiry', extractedExpiryDate)
-      alert('name', extractedCardName)
+      alert(extractedCardNumber);
+      alert(extractedExpiryDate);
+      alert(extractedCardName);
     };
 
-    const interval = setInterval(captureFrameAndRecognize, 5000); // Capture and recognize every 2 seconds
+    // const interval = setInterval(captureFrameAndRecognize, 5000); // Capture and recognize every 2 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   return (
@@ -210,12 +210,13 @@ const App = () => {
       <Webcam
         ref={webcamRef}
         screenshotFormat="image/jpeg"
+        style={{width: "100%",
+          height: "auto"}}
         audio={false}
         width={640}
         height={480}
         videoConstraints={videoConstraints}
       />
-      <div id="canvas"></div>
       {cardData && (
         <div>
           <h2>OCR Result:</h2>
