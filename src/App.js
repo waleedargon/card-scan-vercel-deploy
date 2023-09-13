@@ -189,17 +189,16 @@ const App = () => {
         // Try to extract expiry date using a regular expression
         const expiryDateMatch = line.match(/\d{2}\/\d{2}/);
 
-        console.log('expiryDateMatch', expiryDateMatch)
         if (expiryDateMatch) {
           extractedExpiryDate = expiryDateMatch[0];
         }
       });
-      setCardData( {'extractedCardNumber': extractedCardNumber,
-    'extractedExpiryDate': extractedExpiryDate, 
-  'extractedCardName': extractedCardName});
+      console.log('awdawdaw', extractedCardNumber)
+      console.log('awdawdaw', extractedCardName)
+      console.log('awdawdaw', extractedExpiryDate)
     };
 
-    const interval = setInterval(captureFrameAndRecognize, 10000); // Capture and recognize every 2 seconds
+    const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -210,7 +209,7 @@ const App = () => {
       <Webcam
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        style={{width: "100%",
+        style={{width: "50%",
           height: "auto"}}
         audio={false}
         width={640}
@@ -220,7 +219,7 @@ const App = () => {
       {cardData && (
         <div>
           <h2>OCR Result:</h2>
-          <pre>{cardData}</pre>
+          <pre>{cardData.extractedCardNumber}</pre>
         </div>
       )}
     </div>
