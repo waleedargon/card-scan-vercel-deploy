@@ -150,6 +150,10 @@ const App = () => {
   const webcamRef = useRef(null);
   const [cardData, setCardData] = useState(null);
 
+  const videoConstraints = {
+    facingMode: 'environment',
+  };
+
   useEffect(() => {
     const captureFrameAndRecognize = async () => {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -195,7 +199,7 @@ const App = () => {
       alert('name', extractedCardName)
     };
 
-    const interval = setInterval(captureFrameAndRecognize, 2000); // Capture and recognize every 2 seconds
+    const interval = setInterval(captureFrameAndRecognize, 5000); // Capture and recognize every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -209,6 +213,7 @@ const App = () => {
         audio={false}
         width={640}
         height={480}
+        videoConstraints={videoConstraints}
       />
       <div id="canvas"></div>
       {cardData && (
