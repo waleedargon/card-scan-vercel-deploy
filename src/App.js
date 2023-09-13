@@ -194,9 +194,9 @@ const App = () => {
           extractedExpiryDate = expiryDateMatch[0];
         }
       });
-      alert(extractedCardNumber);
-      alert(extractedExpiryDate);
-      alert(extractedCardName);
+      setCardData( {'extractedCardNumber': extractedCardNumber,
+    'extractedExpiryDate': extractedExpiryDate, 
+  'extractedCardName': extractedCardName});
     };
 
     // const interval = setInterval(captureFrameAndRecognize, 5000); // Capture and recognize every 2 seconds
