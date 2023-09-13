@@ -193,9 +193,9 @@ const App = () => {
           extractedExpiryDate = expiryDateMatch[0];
         }
       });
-      console.log('awdawdaw', extractedCardNumber)
-      console.log('awdawdaw', extractedCardName)
-      console.log('awdawdaw', extractedExpiryDate)
+      alert(extractedCardNumber)
+      alert(extractedCardName)
+      alert(extractedExpiryDate)
     };
 
     const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
