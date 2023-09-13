@@ -117,27 +117,108 @@
 
 // export default App;
 
-import logo from "./logo.svg";
-import "./App.css";
+// import logo from "./logo.svg";
+// import "./App.css";
 
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import PaymentComponent from './PaymentCompoenent';
-//pk_live_51N3G7KH3CgfJQbH9oOe2zba2yBt21edBEsNMaKSVtGZnv1IxzdiZ4Y8jtIpdA7ySgl4G7K9Dlufhn8awjkJAFfco00i7lpd1YF
-//pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI
-const stripePromise = loadStripe("pk_test_51MbtlPF2qxPMBfveHj6RYDrbLSJrtKMoACIRXCU2eE1K4nRuVacXnQYO74mtwl29z7T1i1fJZZKSnPiRQOYVTJrm00eorhLYiW");
+// import { loadStripe } from "@stripe/stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
+// import PaymentComponent from './PaymentCompoenent';
+// //pk_live_51N3G7KH3CgfJQbH9oOe2zba2yBt21edBEsNMaKSVtGZnv1IxzdiZ4Y8jtIpdA7ySgl4G7K9Dlufhn8awjkJAFfco00i7lpd1YF
+// //pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI
+// const stripePromise = loadStripe("pk_test_51MbtlPF2qxPMBfveHj6RYDrbLSJrtKMoACIRXCU2eE1K4nRuVacXnQYO74mtwl29z7T1i1fJZZKSnPiRQOYVTJrm00eorhLYiW");
 
-function App() {
+// function App() {
+//   return (
+//     <>
+//       <div className="App">
+//         <h1>Stripe Payment with Apple Pay</h1>
+//         <Elements stripe={stripePromise}>
+//           <PaymentComponent />
+//         </Elements>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default App;
+
+import React, { useRef, useEffect, useState } from "react";
+import Webcam from "react-webcam";
+import Tesseract from "tesseract.js";
+
+const App = () => {
+  const webcamRef = useRef(null);
+  const [cardData, setCardData] = useState(null);
+
+  useEffect(() => {
+    const captureFrameAndRecognize = async () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      const result = await Tesseract.recognize(imageSrc, "eng", {
+        logger: (m) => console.log("awdawdaw", m),
+      });
+      // Split the input text into lines
+      const lines = result.data.text.split("\n");
+
+
+      // Initialize variables to store extracted information
+      let extractedCardNumber = "";
+      let extractedCardName = "";
+      let extractedExpiryDate = "";
+
+      const capitalLettersRegex = /^[A-Z\s]+$/;
+
+      // Iterate through each line and check for card-related information
+      lines.forEach((line) => {
+        // Try to extract card numbers using a regular expression
+        const cardNumberMatch = line.match(/\d{4}\s\d{4}\s\d{4}\s\d{4}/);
+
+
+        if (cardNumberMatch) {
+          extractedCardNumber = cardNumberMatch[0];
+        }
+
+        // Try to extract cardholder names based on text patterns
+        if (capitalLettersRegex.test(line)) {
+          extractedCardName = line;
+        }
+
+        // Try to extract expiry date using a regular expression
+        const expiryDateMatch = line.match(/\d{2}\/\d{2}/);
+
+        console.log('expiryDateMatch', expiryDateMatch)
+        if (expiryDateMatch) {
+          extractedExpiryDate = expiryDateMatch[0];
+        }
+      });
+      alert('number', extractedCardNumber)
+      alert('expiry', extractedExpiryDate)
+      alert('name', extractedCardName)
+    };
+
+    const interval = setInterval(captureFrameAndRecognize, 2000); // Capture and recognize every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <>
-      <div className="App">
-        <h1>Stripe Payment with Apple Pay</h1>
-        <Elements stripe={stripePromise}>
-          <PaymentComponent />
-        </Elements>
-      </div>
-    </>
+    <div>
+      <h1>Credit Card Scanner</h1>
+      <Webcam
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        audio={false}
+        width={640}
+        height={480}
+      />
+      <div id="canvas"></div>
+      {cardData && (
+        <div>
+          <h2>OCR Result:</h2>
+          <pre>{cardData}</pre>
+        </div>
+      )}
+    </div>
   );
-}
+};
 
 export default App;

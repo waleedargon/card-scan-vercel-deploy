@@ -1,70 +1,112 @@
 // PaymentComponent.js
 
-import React, { useEffect, useState } from 'react';
-import { PaymentRequestButtonElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import React, { useEffect, useState } from "react";
+import {
+  PaymentRequestButtonElement,
+  useStripe,
+  useElements,
+  ExpressCheckoutElement,
+  ExpressCheckout
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+import { Elements } from "@stripe/react-stripe-js";
 
 function PaymentComponent() {
-  const [paymentRequest, setPaymentRequest] = useState(null);
+
   const stripe = useStripe();
-  const elements = useElements();
+  const stripePromise = loadStripe("pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI");
 
-  useEffect(() => {
+  React.useEffect(() => {
+    // const expressCheckoutOptions = {
+    //   buttonType: {
+    //     applePay: 'buy',
+    //     googlePay: 'buy',
+    //     paypal: 'buynow'
+    //   }
+    // }
+    // const elements = stripe.elements({
+    //   locale: 'us',
+    //   mode: 'payment',
+    //   amount: 1099,
+    //   currency: 'usd',
+    // })
+    // const expressCheckoutElement = elements.create(
+    //   'expressCheckout',
+    //   expressCheckoutOptions
+    // )
+    // expressCheckoutElement.mount('#express-checkout-element')
+  }, [])
+  // const [paymentRequest, setPaymentRequest] = useState(null);
+  // const stripe = useStripe();
+  // const elements = useElements();
 
-    if (!stripe || !elements) {
-        return;
-    }
+  // useEffect(() => {
+  //   if (!stripe || !elements) {
+  //     return;
+  //   }
 
-    const pr = stripe.paymentRequest({
-        currency: 'usd',
-        country: 'US',
-        requestPayerEmail: false,
-        total: {
-            label: 'demo payment',
-            amount: 1990
-        }
-    })
+  //   const pr = stripe.paymentRequest({
+  //     currency: "usd",
+  //     country: "US",
+  //     requestPayerEmail: false,
+  //     total: {
+  //       label: "demo payment",
+  //       amount: 1990,
+  //     },
+  //   });
 
-    console.log('DWADWA', );
+  //   console.log("DWADWA");
 
-    pr.canMakePayment().then(result => {
-        console.log('RESULT : ');
-        console.log(result);
-        
-        if (result) {
-            setPaymentRequest(pr);
-        }
-    })
+  //   pr.canMakePayment().then((result) => {
+  //     console.log("RESULT : ");
+  //     console.log(result);
 
-  }, [stripe, elements])
+  //     if (result) {
+  //       setPaymentRequest(pr);
+  //     }
+  //   });
+  // }, [stripe, elements]);
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
 
-//     if (!stripe || !elements) {
-//       return;
-//     }
+  //     if (!stripe || !elements) {
+  //       return;
+  //     }
 
-//     const cardElement = elements.getElement(CardElement);
+  //     const cardElement = elements.getElement(CardElement);
 
-//     const { error, paymentMethod } = await stripe.createPaymentMethod({
-//       type: 'card',
-//       card: cardElement,
-//     });
+  //     const { error, paymentMethod } = await stripe.createPaymentMethod({
+  //       type: 'card',
+  //       card: cardElement,
+  //     });
 
-//     if (error) {
-//       console.error('Error:', error);
-//       setPaymentError(error.message);
-//     } else {
-//       console.log('Payment Method:', paymentMethod);
-//       // Send paymentMethod.id to your server for payment processing
-//     }
-//   };
+  //     if (error) {
+  //       console.error('Error:', error);
+  //       setPaymentError(error.message);
+  //     } else {
+  //       console.log('Payment Method:', paymentMethod);
+  //       // Send paymentMethod.id to your server for payment processing
+  //     }
+  //   };
 
   return (
     <>
-        {
+      {/* {
             paymentRequest && <PaymentRequestButtonElement options={{paymentRequest}} />
-        }
+        } */}
+        {/* <div id="express-checkout-element">
+
+        </div> */}
+        <Elements  stripe={stripePromise}>
+        <ExpressCheckoutElement
+        mode="payment"
+        clientSecret="sk_test_51MbtlPF2qxPMBfvebTHcxmGqgk6q7Z6E6ZYzSvviFnwChoOhagLDZVCGNL728ppAMwYxZV4432wmgrztkovpUsx100Mdir5zWg"
+      />
+        </Elements>
+
+      
     </>
   );
 }
