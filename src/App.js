@@ -198,9 +198,9 @@ const App = () => {
       alert(extractedExpiryDate)
     };
 
-    const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
+    // const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   return (
