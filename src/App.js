@@ -198,6 +198,19 @@ const App = () => {
       alert(extractedExpiryDate)
     };
 
+      // Create a new script element
+      const script = document.createElement("script");
+      script.async = true;
+      script.src =
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9071414908703413";
+      script.crossOrigin = "anonymous";
+  
+      // Append the script to the document body
+      document.body.appendChild(script);
+  
+      // Push the Google AdSense initialization function
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+
     // const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
 
     // return () => clearInterval(interval);
@@ -205,7 +218,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Credit Card Scanner</h1>
+      {/* <h1>Credit Card Scanner</h1>
       <Webcam
         ref={webcamRef}
         screenshotFormat="image/jpeg"
@@ -221,7 +234,17 @@ const App = () => {
           <h2>OCR Result:</h2>
           <pre>{cardData.extractedCardNumber}</pre>
         </div>
-      )}
+      )} */}
+      <div>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client="ca-pub-9071414908703413"
+        data-ad-slot="2613891403"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </div>
     </div>
   );
 };
