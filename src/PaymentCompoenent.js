@@ -10,63 +10,65 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-import { Elements } from "@stripe/react-stripe-js";
+import { Elements, ApplePayButton } from "@stripe/react-stripe-js";
 
-function PaymentComponent() {
+const PaymentComponent = () => {
 
   const stripe = useStripe();
+  const elements = useElements();
+  const [paymentRequest, setPaymentRequest] = useState(null);
   const stripePromise = loadStripe("pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI");
 
-  React.useEffect(() => {
-    // const expressCheckoutOptions = {
-    //   buttonType: {
-    //     applePay: 'buy',
-    //     googlePay: 'buy',
-    //     paypal: 'buynow'
-    //   }
-    // }
-    // const elements = stripe.elements({
-    //   locale: 'us',
-    //   mode: 'payment',
-    //   amount: 1099,
-    //   currency: 'usd',
-    // })
-    // const expressCheckoutElement = elements.create(
-    //   'expressCheckout',
-    //   expressCheckoutOptions
-    // )
-    // expressCheckoutElement.mount('#express-checkout-element')
-  }, [])
+  // React.useEffect(() => {
+  //   const expressCheckoutOptions = {
+  //     buttonType: {
+  //       applePay: 'buy',
+  //       googlePay: 'buy',
+  //       paypal: 'buynow'
+  //     }
+  //   }
+  //   const elements = stripe.elements({
+  //     locale: 'us',
+  //     mode: 'payment',
+  //     amount: 1099,
+  //     currency: 'usd',
+  //   })
+  //   const expressCheckoutElement = elements.create(
+  //     'expressCheckout',
+  //     expressCheckoutOptions
+  //   )
+  //   expressCheckoutElement.mount('#express-checkout-element')
+  // }, [])
   // const [paymentRequest, setPaymentRequest] = useState(null);
   // const stripe = useStripe();
   // const elements = useElements();
 
-  // useEffect(() => {
-  //   if (!stripe || !elements) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!stripe || !elements) {
+      return;
+    }
 
-  //   const pr = stripe.paymentRequest({
-  //     currency: "usd",
-  //     country: "US",
-  //     requestPayerEmail: false,
-  //     total: {
-  //       label: "demo payment",
-  //       amount: 1990,
-  //     },
-  //   });
+    const pr = stripe.paymentRequest({
+      country: "US",
+      currency: "usd",
+      total: {
+        label: "Membership",
+        amount: 1000,
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      disableWallets: ["googlePay", "browserCard"],
+    });
 
-  //   console.log("DWADWA");
+    pr.canMakePayment().then((result) => {
+      console.log("RESULT : ");
+      console.log(result);
 
-  //   pr.canMakePayment().then((result) => {
-  //     console.log("RESULT : ");
-  //     console.log(result);
-
-  //     if (result) {
-  //       setPaymentRequest(pr);
-  //     }
-  //   });
-  // }, [stripe, elements]);
+      if (result) {
+        setPaymentRequest(pr);
+      }
+    });
+  }, [stripe, elements]);
 
   //   const handleSubmit = async (e) => {
   //     e.preventDefault();
@@ -93,18 +95,12 @@ function PaymentComponent() {
 
   return (
     <>
-      {/* {
+        <h1>Hello applePay</h1>
+      {
             paymentRequest && <PaymentRequestButtonElement options={{paymentRequest}} />
-        } */}
-        {/* <div id="express-checkout-element">
+        }
+        
 
-        </div> */}
-        <Elements  stripe={stripePromise}>
-        <ExpressCheckoutElement
-        mode="payment"
-        clientSecret="sk_test_51MbtlPF2qxPMBfvebTHcxmGqgk6q7Z6E6ZYzSvviFnwChoOhagLDZVCGNL728ppAMwYxZV4432wmgrztkovpUsx100Mdir5zWg"
-      />
-        </Elements>
 
       
     </>

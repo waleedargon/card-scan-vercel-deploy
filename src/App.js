@@ -117,136 +117,136 @@
 
 // export default App;
 
-// import logo from "./logo.svg";
-// import "./App.css";
+import logo from "./logo.svg";
+import "./App.css";
 
-// import { loadStripe } from "@stripe/stripe-js";
-// import { Elements } from "@stripe/react-stripe-js";
-// import PaymentComponent from './PaymentCompoenent';
-// //pk_live_51N3G7KH3CgfJQbH9oOe2zba2yBt21edBEsNMaKSVtGZnv1IxzdiZ4Y8jtIpdA7ySgl4G7K9Dlufhn8awjkJAFfco00i7lpd1YF
-// //pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI
-// const stripePromise = loadStripe("pk_test_51MbtlPF2qxPMBfveHj6RYDrbLSJrtKMoACIRXCU2eE1K4nRuVacXnQYO74mtwl29z7T1i1fJZZKSnPiRQOYVTJrm00eorhLYiW");
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import PaymentComponent from './PaymentCompoenent';
+//pk_live_51N3G7KH3CgfJQbH9oOe2zba2yBt21edBEsNMaKSVtGZnv1IxzdiZ4Y8jtIpdA7ySgl4G7K9Dlufhn8awjkJAFfco00i7lpd1YF
+//pk_test_51N3G7KH3CgfJQbH9UvRGNfeXUCzOLRTIpfmUH20uAEejjEIQGSJuQNMADI25hqwGMBMoGuWhwDtRw0dpdB4nEjer00lFEVhvvI
+const stripePromise = loadStripe("pk_test_51MbtlPF2qxPMBfveHj6RYDrbLSJrtKMoACIRXCU2eE1K4nRuVacXnQYO74mtwl29z7T1i1fJZZKSnPiRQOYVTJrm00eorhLYiW");
 
-// function App() {
-//   return (
-//     <>
-//       <div className="App">
-//         <h1>Stripe Payment with Apple Pay</h1>
-//         <Elements stripe={stripePromise}>
-//           <PaymentComponent />
-//         </Elements>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default App;
-
-import React, { useRef, useEffect, useState } from "react";
-import Webcam from "react-webcam";
-import Tesseract from "tesseract.js";
-
-const App = () => {
-  const webcamRef = useRef(null);
-  const [cardData, setCardData] = useState(null);
-
-  const videoConstraints = {
-    facingMode: 'environment',
-  };
-
-  useEffect(() => {
-    const captureFrameAndRecognize = async () => {
-      const imageSrc = webcamRef.current.getScreenshot();
-      const result = await Tesseract.recognize(imageSrc, "eng", {
-        logger: (m) => console.log("awdawdaw", m),
-      });
-      // Split the input text into lines
-      const lines = result.data.text.split("\n");
-
-
-      // Initialize variables to store extracted information
-      let extractedCardNumber = "";
-      let extractedCardName = "";
-      let extractedExpiryDate = "";
-
-      const capitalLettersRegex = /^[A-Z\s]+$/;
-
-      // Iterate through each line and check for card-related information
-      lines.forEach((line) => {
-        // Try to extract card numbers using a regular expression
-        const cardNumberMatch = line.match(/\d{4}\s\d{4}\s\d{4}\s\d{4}/);
-
-
-        if (cardNumberMatch) {
-          extractedCardNumber = cardNumberMatch[0];
-        }
-
-        // Try to extract cardholder names based on text patterns
-        if (capitalLettersRegex.test(line)) {
-          extractedCardName = line;
-        }
-
-        // Try to extract expiry date using a regular expression
-        const expiryDateMatch = line.match(/\d{2}\/\d{2}/);
-
-        if (expiryDateMatch) {
-          extractedExpiryDate = expiryDateMatch[0];
-        }
-      });
-      alert(extractedCardNumber)
-      alert(extractedCardName)
-      alert(extractedExpiryDate)
-    };
-
-      // Create a new script element
-      const script = document.createElement("script");
-      script.async = true;
-      script.src =
-        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9071414908703413";
-      script.crossOrigin = "anonymous";
-  
-      // Append the script to the document body
-      document.body.appendChild(script);
-  
-      // Push the Google AdSense initialization function
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-
-    // const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
-
-    // return () => clearInterval(interval);
-  }, []);
-
+function App() {
   return (
-    <div>
-      {/* <h1>Credit Card Scanner</h1>
-      <Webcam
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        style={{width: "50%",
-          height: "auto"}}
-        audio={false}
-        width={640}
-        height={480}
-        videoConstraints={videoConstraints}
-      />
-      {cardData && (
-        <div>
-          <h2>OCR Result:</h2>
-          <pre>{cardData.extractedCardNumber}</pre>
-        </div>
-      )} */}
-      <div>
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-client="ca-pub-9071414908703413"
-        data-ad-slot="2613891403"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
-    </div>
-    </div>
+    <>
+      <div className="App">
+        <h1>Stripe Payment with Apple Pay</h1>
+        <Elements stripe={stripePromise}>
+          <PaymentComponent />
+        </Elements>
+      </div>
+    </>
   );
-};
+}
 
 export default App;
+
+// import React, { useRef, useEffect, useState } from "react";
+// import Webcam from "react-webcam";
+// import Tesseract from "tesseract.js";
+
+// const App = () => {
+//   const webcamRef = useRef(null);
+//   const [cardData, setCardData] = useState(null);
+
+//   const videoConstraints = {
+//     facingMode: 'environment',
+//   };
+
+//   useEffect(() => {
+//     const captureFrameAndRecognize = async () => {
+//       const imageSrc = webcamRef.current.getScreenshot();
+//       const result = await Tesseract.recognize(imageSrc, "eng", {
+//         logger: (m) => console.log("awdawdaw", m),
+//       });
+//       // Split the input text into lines
+//       const lines = result.data.text.split("\n");
+
+
+//       // Initialize variables to store extracted information
+//       let extractedCardNumber = "";
+//       let extractedCardName = "";
+//       let extractedExpiryDate = "";
+
+//       const capitalLettersRegex = /^[A-Z\s]+$/;
+
+//       // Iterate through each line and check for card-related information
+//       lines.forEach((line) => {
+//         // Try to extract card numbers using a regular expression
+//         const cardNumberMatch = line.match(/\d{4}\s\d{4}\s\d{4}\s\d{4}/);
+
+
+//         if (cardNumberMatch) {
+//           extractedCardNumber = cardNumberMatch[0];
+//         }
+
+//         // Try to extract cardholder names based on text patterns
+//         if (capitalLettersRegex.test(line)) {
+//           extractedCardName = line;
+//         }
+
+//         // Try to extract expiry date using a regular expression
+//         const expiryDateMatch = line.match(/\d{2}\/\d{2}/);
+
+//         if (expiryDateMatch) {
+//           extractedExpiryDate = expiryDateMatch[0];
+//         }
+//       });
+//       alert(extractedCardNumber)
+//       alert(extractedCardName)
+//       alert(extractedExpiryDate)
+//     };
+
+//       // Create a new script element
+//       const script = document.createElement("script");
+//       script.async = true;
+//       script.src =
+//         "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9071414908703413";
+//       script.crossOrigin = "anonymous";
+  
+//       // Append the script to the document body
+//       document.body.appendChild(script);
+  
+//       // Push the Google AdSense initialization function
+//       (window.adsbygoogle = window.adsbygoogle || []).push({});
+
+//     // const interval = setInterval(captureFrameAndRecognize, 4000); // Capture and recognize every 2 seconds
+
+//     // return () => clearInterval(interval);
+//   }, []);
+
+//   return (
+//     <div>
+//       {/* <h1>Credit Card Scanner</h1>
+//       <Webcam
+//         ref={webcamRef}
+//         screenshotFormat="image/jpeg"
+//         style={{width: "50%",
+//           height: "auto"}}
+//         audio={false}
+//         width={640}
+//         height={480}
+//         videoConstraints={videoConstraints}
+//       />
+//       {cardData && (
+//         <div>
+//           <h2>OCR Result:</h2>
+//           <pre>{cardData.extractedCardNumber}</pre>
+//         </div>
+//       )} */}
+//       <div>
+//       <ins
+//         className="adsbygoogle"
+//         style={{ display: "block" }}
+//         data-ad-client="ca-pub-9071414908703413"
+//         data-ad-slot="2613891403"
+//         data-ad-format="auto"
+//         data-full-width-responsive="true"
+//       />
+//     </div>
+//     </div>
+//   );
+// };
+
+// export default App;
