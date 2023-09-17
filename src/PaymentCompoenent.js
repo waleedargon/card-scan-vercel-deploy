@@ -57,7 +57,7 @@ const PaymentComponent = () => {
       },
       requestPayerName: true,
       requestPayerEmail: true,
-      disableWallets: ["applePay", "browserCard", "link"],
+      disableWallets: ["link"],
     });
 
     pr.canMakePayment().then((result) => {
